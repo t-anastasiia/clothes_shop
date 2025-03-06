@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 final class MainViewController: UIViewController {
     
@@ -41,15 +40,24 @@ final class MainViewController: UIViewController {
     }
     
     private func switchToChild(_ vc: UIViewController) {
+        
+        guard currentChild !== vc else { return }
+        
         // убираем текущий экран
         if let current = currentChild {
             current.willMove(toParent: nil)
-            current.view.removeFromSuperview()
-            current.removeFromParent()
+            
+            UIView.animate(withDuration: 0.2, animations: {
+                current.view.alpha = 0
+            }, completion: { _ in
+                current.view.removeFromSuperview()
+                current.removeFromParent()
+            })
         }
         
         // добаляем нового
         addChild(vc)
+        vc.view.alpha = 0
         view.addSubview(vc.view)
         
         // вставляем под таб бар, чтоб он не перекрывался
@@ -58,6 +66,10 @@ final class MainViewController: UIViewController {
         vc.view.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
             make.bottom.equalTo(mainTabBar.snp.top)
+        }
+        
+        UIView.animate(withDuration: 0.2) {
+            vc.view.alpha = 1
         }
         
         vc.didMove(toParent: self)

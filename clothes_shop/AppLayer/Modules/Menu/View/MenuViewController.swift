@@ -9,11 +9,94 @@ import UIKit
 import SnapKit
 
 class MenuViewController: UIViewController {
+    
+    // Данные для демонстрации
+    // TODO: подцеплять опции с бэка, в админке добавить возможность добавлять/удалять опции
+    private let options = ["Новинки", "Джинсы", "Футболки", "Обувь", "Мужское", "Женское"]
+    private var selectedIndex = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .blue
+        
+        self.edgesForExtendedLayout = []
+        
+        setupCollectionView()
+        setupShadow()
+
+        view.backgroundColor = .white
     }
 
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 8 // расстояние между cells
+        
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.backgroundColor = .white
+        collection.showsHorizontalScrollIndicator = false
+        collection.delegate = self
+        collection.dataSource = self
+        collection.register(OptionCell.self, forCellWithReuseIdentifier: OptionCell.identifier)
+        return collection
+    }()
+    
+    private func setupCollectionView() {
+        view.addSubview(collectionView)
+        
+        collectionView.snp.makeConstraints { make in
+            //TODO: разобраться почему не прилегает safe area
+            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
+            make.horizontalEdges.equalToSuperview()
+            make.height.equalTo(58)
+        }
+    }
+    
+    // TODO: разобраться как сделать тень только снизу
+    private func setupShadow() {
+        collectionView.clipsToBounds = false
+        collectionView.layer.shadowColor = UIColor(red: 0x82/255, green: 0x88/255, blue: 0x8E/255, alpha: 0.25).cgColor
+        collectionView.layer.shadowOpacity = 1
+        collectionView.layer.shadowOffset = CGSize(width: 0, height: 2)
+        collectionView.layer.shadowRadius = 15
+    }
+}
 
+
+// MARK: - UICollectionViewDelegateFlowLayout, UICollectionViewDataSource
+extension MenuViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return options.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionCell.identifier, for: indexPath) as? OptionCell else {
+            fatalError("Failed to dequeue OptionCell")
+        }
+        
+        let isSelected = indexPath.item == selectedIndex
+        cell.configure(text: options[indexPath.item], isSelected: isSelected)
+        return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let text = options[indexPath.item]
+        let width = (text as NSString).size(
+            withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)]
+        ).width + 36 // padding внутри ячейки
+        
+        return CGSize(width: width, height: 34)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        selectedIndex = indexPath.item
+        collectionView.reloadData()
+
+        // TODO: сообщить Presenter о новом выборе
+        // presenter.didSelectOption(at: selectedIndex)
+    }
 }

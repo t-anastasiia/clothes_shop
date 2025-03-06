@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import SnapKit
 
 protocol MainTabBarViewDelegate: AnyObject {
     func didTapMenuIcon()
@@ -90,6 +89,12 @@ class MainTabBarView: UIView {
         stackView.addArrangedSubview(profileButton)
         
         addSubview(stackView)
+        
+        layer.shadowColor = UIColor(red: 130/255, green: 136/255, blue: 142/255, alpha: 0.25).cgColor
+        layer.shadowOpacity = 1
+        layer.shadowOffset = CGSize(width: 0, height: -2)
+        layer.shadowRadius = 15
+        
     }
     
     private func setupActions() {
@@ -100,11 +105,9 @@ class MainTabBarView: UIView {
     
     private func setupConstraints() {
         stackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview().inset(10)
-        }
-        
-        snp.makeConstraints { make in
-            make.height.equalTo(60)
+            make.trailing.leading.equalToSuperview().inset(16)
+            make.bottom.equalTo(safeAreaLayoutGuide).inset(10)
+            make.top.equalToSuperview().inset(10)
         }
     }
     

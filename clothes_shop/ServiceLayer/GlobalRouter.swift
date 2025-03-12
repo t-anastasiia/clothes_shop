@@ -32,8 +32,7 @@ final class GlobalRouter {
         vc.view.backgroundColor = .systemRed
         vc.title = "Заглушка авторизации"
         
-        let nav = UINavigationController(rootViewController: vc)
-        window?.rootViewController = nav
+        window?.rootViewController = vc
         window?.makeKeyAndVisible()
     }
     
@@ -41,9 +40,7 @@ final class GlobalRouter {
     func setMain() {
         let mainVC = MainConfigurator().configure()
         
-        let nav = UINavigationController(rootViewController: mainVC)
-        
-        window?.rootViewController = nav
+        window?.rootViewController = mainVC
         window?.makeKeyAndVisible()
     }
     

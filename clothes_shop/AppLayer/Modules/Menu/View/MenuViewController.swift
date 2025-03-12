@@ -18,10 +18,7 @@ class MenuViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.edgesForExtendedLayout = []
-        
         setupCollectionView()
-        setupShadow()
 
         view.backgroundColor = .white
     }
@@ -34,6 +31,9 @@ class MenuViewController: UIViewController {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.backgroundColor = .white
         collection.showsHorizontalScrollIndicator = false
+        collection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16) // делает отступ содержимого внутри
+        
+        
         collection.delegate = self
         collection.dataSource = self
         collection.register(OptionCell.self, forCellWithReuseIdentifier: OptionCell.identifier)
@@ -41,23 +41,27 @@ class MenuViewController: UIViewController {
     }()
     
     private func setupCollectionView() {
-        view.addSubview(collectionView)
+        let shadowContainer = UIView()
+        shadowContainer.backgroundColor = .white
+        shadowContainer.layer.shadowColor = UIColor(red: 0x82/255, green: 0x88/255, blue: 0x8E/255, alpha: 0.25).cgColor
+        shadowContainer.layer.shadowOpacity = 1
+        shadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
+        shadowContainer.layer.shadowRadius = 15
+        
+        view.addSubview(shadowContainer)
+        shadowContainer.addSubview(collectionView)
         
         collectionView.snp.makeConstraints { make in
-            //TODO: разобраться почему не прилегает safe area
-            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-            make.horizontalEdges.equalToSuperview()
-            make.height.equalTo(58)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(12)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(12)
+            make.height.equalTo(34)
         }
-    }
-    
-    // TODO: разобраться как сделать тень только снизу
-    private func setupShadow() {
-        collectionView.clipsToBounds = false
-        collectionView.layer.shadowColor = UIColor(red: 0x82/255, green: 0x88/255, blue: 0x8E/255, alpha: 0.25).cgColor
-        collectionView.layer.shadowOpacity = 1
-        collectionView.layer.shadowOffset = CGSize(width: 0, height: 2)
-        collectionView.layer.shadowRadius = 15
+        
+        shadowContainer.snp.makeConstraints { make in
+            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
+            make.top.equalToSuperview()
+        }
     }
 }
 
@@ -89,7 +93,7 @@ extension MenuViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
             withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)]
         ).width + 36 // padding внутри ячейки
         
-        return CGSize(width: width, height: 34)
+        return CGSize(width: width, height: collectionView.bounds.height)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

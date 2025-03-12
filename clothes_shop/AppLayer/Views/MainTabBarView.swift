@@ -94,7 +94,6 @@ class MainTabBarView: UIView {
         layer.shadowOpacity = 1
         layer.shadowOffset = CGSize(width: 0, height: -2)
         layer.shadowRadius = 15
-        
     }
     
     private func setupActions() {

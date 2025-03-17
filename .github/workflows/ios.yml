@@ -10,12 +10,11 @@ jobs:
     runs-on: macos-15
 
     steps:
-        - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-        - name: Select Xcode 16
-          run: sudo xcode-select -switch /Applications/Xcode_16.app
+      - name: Select Xcode 16
+        run: sudo xcode-select -switch /Applications/Xcode_16.app
 
-        - name: Build
-          run: xcodebuild clean build -project clothes_shop.xcodeproj -scheme clothes_shop 'platform=iOS Simulator,name=iPhone 16,OS=18.0'
+      - name: Build
+        run: xcodebuild clean build -project clothes_shop.xcodeproj -scheme clothes_shop 'platform=iOS Simulator,name=iPhone 16,OS=18.0'
             CODE_SIGNING_ALLOWED=NO
-

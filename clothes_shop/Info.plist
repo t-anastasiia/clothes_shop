@@ -19,5 +19,15 @@
 			</array>
 		</dict>
 	</dict>
+	
+	<!-- API Configuration -->
+	<key>RAPID_API_KEY</key>
+	<string>$(RAPID_API_KEY)</string>
+	<key>RAPID_API_HOST</key>
+	<string>$(RAPID_API_HOST)</string>
+	<key>API_BASE_URL</key>
+	<string>$(API_BASE_URL)</string>
+	<key>API_TIMEOUT_INTERVAL</key>
+	<string>$(API_TIMEOUT_INTERVAL)</string>
 </dict>
 </plist>

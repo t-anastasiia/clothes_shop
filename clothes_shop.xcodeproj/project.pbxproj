@@ -37,17 +37,29 @@
 		31D692B72D7877A200DEE8E6 /* Exceptions for "clothes_shop" folder in "clothes_shop" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Config.xcconfig,
 				Info.plist,
 			);
 			target = 313019792D7836FD007AB73D /* clothes_shop */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
+/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+		3183A2562D885B53005D1CD8 /* Exceptions for "clothes_shop" folder in "Compile Sources" phase from "clothes_shop" target */ = {
+			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
+			buildPhase = 313019762D7836FD007AB73D /* Sources */;
+			membershipExceptions = (
+				Config.xcconfig,
+			);
+		};
+/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		3130197C2D7836FD007AB73D /* clothes_shop */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				31D692B72D7877A200DEE8E6 /* Exceptions for "clothes_shop" folder in "clothes_shop" target */,
+				3183A2562D885B53005D1CD8 /* Exceptions for "clothes_shop" folder in "Compile Sources" phase from "clothes_shop" target */,
 			);
 			path = clothes_shop;
 			sourceTree = "<group>";
@@ -297,6 +309,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CONFIGURATION_FILE = "$(SRCROOT)/Config.xcconfig";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S5A22857YR;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -326,6 +339,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CONFIGURATION_FILE = "$(SRCROOT)/Config.xcconfig";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S5A22857YR;
 				GENERATE_INFOPLIST_FILE = YES;

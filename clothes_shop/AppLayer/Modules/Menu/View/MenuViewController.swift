@@ -20,6 +20,7 @@ class MenuViewController: UIViewController {
         
         setupCollectionView()
 
+        //TODO: cделать с учетом dark/ligt mode
         view.backgroundColor = .white
     }
 
@@ -59,8 +60,7 @@ class MenuViewController: UIViewController {
         }
         
         shadowContainer.snp.makeConstraints { make in
-            make.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.top.equalToSuperview()
+            make.top.leading.trailing.equalToSuperview()
         }
     }
 }

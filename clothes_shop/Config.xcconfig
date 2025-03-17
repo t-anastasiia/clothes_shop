@@ -1,0 +1,9 @@
+// API Configuration
+RAPID_API_KEY = 7e698c9f5emshba3f15485a2f16ap169b01jsn63dd20880bf6
+RAPID_API_HOST = asos-api6.p.rapidapi.com
+
+// Base URL
+API_BASE_URL = https:$()/$()/asos-api6.p.rapidapi.com
+
+// Other Configuration
+API_TIMEOUT_INTERVAL = 10.0

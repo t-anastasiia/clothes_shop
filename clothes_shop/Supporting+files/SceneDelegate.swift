@@ -18,7 +18,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         
         GlobalRouter.instance.window = window
-        
         GlobalRouter.instance.presentLoading()
         
         self.window = window

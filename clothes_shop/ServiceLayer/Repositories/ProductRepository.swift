@@ -8,7 +8,6 @@
 import Foundation
 
 protocol ProductRepositoryProtocol {
-    func getProductsByCategory(categoryId: String) async throws -> [Product]
     func getProductDetails(productId: String) async throws -> ProductDetails
 }
 
@@ -17,16 +16,6 @@ final class ProductRepository: ProductRepositoryProtocol {
     
     init(networkService: NetworkService = .shared) {
         self.networkService = networkService
-    }
-    
-    func getProductsByCategory(categoryId: String) async throws -> [Product] {
-        let queryParams = ["categoryId": categoryId]
-        let request = ProductRequest(
-            endpoint: .byCategory(categoryId: categoryId),
-            queryParams: queryParams
-        )
-        let response: ProductResponse = try await networkService.request(request)
-        return response.data.products
     }
     
     func getProductDetails(productId: String) async throws -> ProductDetails {

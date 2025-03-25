@@ -46,8 +46,8 @@
             filePath = "clothes_shop/ServiceLayer/Repositories/ProductRepository.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "31"
-            endingLineNumber = "31"
+            startingLineNumber = "20"
+            endingLineNumber = "20"
             landmarkName = "ProductRepository"
             landmarkType = "3">
          </BreakpointContent>
@@ -62,8 +62,8 @@
             filePath = "clothes_shop/ServiceLayer/Repositories/ProductRepository.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "33"
-            endingLineNumber = "33"
+            startingLineNumber = "22"
+            endingLineNumber = "22"
             landmarkName = "getProductDetails(productId:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -78,8 +78,8 @@
             filePath = "clothes_shop/ServiceLayer/Repositories/ProductRepository.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
             landmarkName = "getProductDetails(productId:)"
             landmarkType = "7">
          </BreakpointContent>

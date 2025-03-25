@@ -12,7 +12,7 @@ class ProductViewController: UIViewController {
     
     var presenter: ProductPresenterProtocol!
     
-    // MARK: - Elements
+    // MARK: - UI Elements
     
     private let markLabel: UILabel = {
         let label = UILabel()

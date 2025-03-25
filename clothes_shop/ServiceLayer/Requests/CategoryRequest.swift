@@ -1,24 +1,24 @@
 //
-//  ProductListRequest.swift
+//  CategoryRequest.swift
 //  clothes_shop
 //
-//  Created by anastasiia talmazan on 2025-03-17.
+//  Created by anastasiia talmazan on 2025-03-19.
 //
 
 import Foundation
 
-enum ProductEndpoint {
-    case details(productId: String)
+enum CategoryEndpoint {
+    case byGender(_ gender: Gender)
     
     var path: String {
         switch self {
-        case .details:
-            return "/product/description"
+            case .byGender(let gender):
+                return "/marketplace/categories/\(gender)"
         }
     }
 }
 
-struct ProductRequest: RequestProtocol {
+struct CategoryRequest: RequestProtocol {
     let endpoint: ProductEndpoint
     let queryParams: [String: String]
     

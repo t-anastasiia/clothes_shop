@@ -14,15 +14,12 @@ jobs:
 
     steps:
         - uses: actions/checkout@v4
-        
-        - name: List available simulators
-          run: xcrun simctl list devices
 
         - name: Select Xcode 16
           run: sudo xcode-select -switch /Applications/Xcode_16.app
 
         - name: Build
-          run: xcodebuild clean build -project clothes_shop.xcodeproj -scheme clothes_shop -destination 'id=B59C6C56-3086-4088-BB51-98A98B7518ED'
+          run: xcodebuild clean build -project clothes_shop.xcodeproj -scheme clothes_shop 'platform=iOS Simulator,name=iPhone 16,OS=18.2'
 
         - name: Run tests
-          run: xcodebuild test -project clothes_shop.xcodeproj -scheme clothes_shop -destination 'id=B59C6C56-3086-4088-BB51-98A98B7518ED'
+          run: xcodebuild test -project clothes_shop.xcodeproj -scheme clothes_shop 'platform=iOS Simulator,name=iPhone 16,OS=18.2'

@@ -2,9 +2,11 @@ name: iOS CI
 
 on:
   push:
-    branches: [develop]
+    branches:
+      - 'feature/**'
   pull_request:
-    branches: [main]
+    branches:
+       - develop
 
 jobs:
   build:
@@ -12,6 +14,9 @@ jobs:
 
     steps:
         - uses: actions/checkout@v4
+        
+        - name: List available simulators
+          run: xcrun simctl list devices
 
         - name: Select Xcode 16
           run: sudo xcode-select -switch /Applications/Xcode_16.app

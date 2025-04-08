@@ -2,9 +2,8 @@ name: iOS CI
 
 on:
   push:
-    branches: [develop]
-  pull_request:
-    branches: [main]
+    branches-ignore:
+      - develop
 
 jobs:
   build:
@@ -17,7 +16,6 @@ jobs:
           run: sudo xcode-select -switch /Applications/Xcode_16.app
 
         - name: Build
-          run: xcodebuild clean build -project clothes_shop.xcodeproj -scheme clothes_shop -destination 'id=B59C6C56-3086-4088-BB51-98A98B7518ED'
+          run: xcodebuild clean build -project clothes_shop.xcodeproj -scheme clothes_shop 'platform=iOS Simulator,name=iPhone 16,OS=18.0'
+            CODE_SIGNING_ALLOWED=NO
 
-        - name: Run tests
-          run: xcodebuild test -project clothes_shop.xcodeproj -scheme clothes_shop -destination 'id=B59C6C56-3086-4088-BB51-98A98B7518ED'

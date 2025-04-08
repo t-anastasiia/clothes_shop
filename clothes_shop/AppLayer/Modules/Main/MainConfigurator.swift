@@ -11,10 +11,10 @@ final class MainConfigurator {
 
     func configure() -> UIViewController {
 
-        let viewController = MainViewController()
+        // TODO: вернуть на MainViewController
+        /// сейчас тут ProductViewController чтобы тестировать его для ДЗ1
         
-        // TODO: добавить Presenter, Interactor, Router
-        
+        let viewController = ProductRouter.createModule()
         return viewController
     }
 }

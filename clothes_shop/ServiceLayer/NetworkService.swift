@@ -37,6 +37,7 @@ final class NetworkService: NetworkServiceProtocol {
         urlRequest.cachePolicy = .useProtocolCachePolicy
         
         do {
+            print("Final request URL:", urlRequest.url?.absoluteString ?? "Invalid URL")
             let (data, response) = try await session.data(for: urlRequest)
             
             guard let httpResponse = response as? HTTPURLResponse else {

@@ -37,7 +37,7 @@ class MenuViewController: UIViewController {
         
         collection.delegate = self
         collection.dataSource = self
-        collection.register(OptionCell.self, forCellWithReuseIdentifier: OptionCell.identifier)
+        collection.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
         return collection
     }()
     
@@ -75,7 +75,7 @@ extension MenuViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
     
     func collectionView(_ collectionView: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OptionCell.identifier, for: indexPath) as? OptionCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChipCell.identifier, for: indexPath) as? ChipCell else {
             fatalError("Failed to dequeue OptionCell")
         }
         

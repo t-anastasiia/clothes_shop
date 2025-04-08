@@ -13,7 +13,8 @@ final class MainConfigurator {
 
         // TODO: вернуть на MainViewController
         /// сейчас тут ProductViewController чтобы тестировать его для ДЗ1
-        
+
+//        let viewController = MenuViewController()
         let viewController = ProductRouter.createModule()
         return viewController
     }

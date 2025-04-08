@@ -16,5 +16,5 @@ protocol ProductInteractorInputProtocol: AnyObject {
 }
 
 protocol ProductInteractorOutputProtocol: AnyObject {
-    func didFetchProduct(_ product: ProductDetails)
+    func didFetchProduct(_ product: ProductDetailed)
 }

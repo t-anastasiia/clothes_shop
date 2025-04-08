@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ProductViewProtocol: AnyObject {
-    func displayProduct(_ product: ProductDetails)
+    func displayProduct(_ product: ProductDetailed)
 }

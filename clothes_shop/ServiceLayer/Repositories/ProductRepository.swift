@@ -8,38 +8,39 @@
 import Foundation
 
 protocol ProductRepositoryProtocol {
-    func getProductsByCategory(categoryId: String) async throws -> [Product]
-    func getProductDetails(productId: String) async throws -> ProductDetails
+//    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed]
+    func getProductDetails(productId: String) async throws -> ProductDetailed
 }
 
 final class ProductRepository: ProductRepositoryProtocol {
     private let networkService: NetworkService
-    
+
     init(networkService: NetworkService = .shared) {
         self.networkService = networkService
     }
-    
-    func getProductsByCategory(categoryId: String) async throws -> [Product] {
-        let queryParams = ["categoryId": categoryId]
-        let request = ProductRequest(
-            endpoint: .byCategory(categoryId: categoryId),
-            queryParams: queryParams
-        )
-        let response: ProductResponse = try await networkService.request(request)
-        return response.data.products
-    }
-    
-    func getProductDetails(productId: String) async throws -> ProductDetails {
+
+//    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed] {
+//        let queryParams = ["categoryId": categoryId]
+//        let request = ProductRequest(
+//            endpoint: .byCategory(categoryId: categoryId),
+//            queryParams: queryParams
+//        )
+//        let response: ProductListResponseDTO = try await networkService.request(request)
+//        return response.data.products.map { $0.toDetailed() }
+//    }
+
+    func getProductDetails(productId: String) async throws -> ProductDetailed {
         let request = ProductRequest(
             endpoint: .details(productId: productId),
             queryParams: ["productId": productId]
         )
-        let response: ProductDetailsResponse = try await networkService.request(request)
-        return response.data
+        let response: ProductDetailsResponseDTO = try await networkService.request(request)
+        return response.data.toDetailed()
     }
 }
 
-struct ProductDetailsResponse: Codable {
-    let data: ProductDetails
+struct ProductDetailsResponseDTO: Codable {
+    let data: ProductDTO
+    let message: String?
     let error: String?
 }

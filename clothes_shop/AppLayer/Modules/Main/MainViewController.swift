@@ -8,18 +8,28 @@
 import UIKit
 
 final class MainViewController: UIViewController {
-    
-    /// опции таб бара
-    private let menuVC = MenuViewController()
-    private let cartVC = CartViewController()
-    private let profileVC = ProfileViewController()
-    
-    /// текущая опция таб бара
-    private var currentChild: UIViewController?
-    
-    /// таб бар
     private let mainTabBar = MainTabBarView()
-    
+    private var currentChild: UIViewController?
+
+    /// опции таб бара
+    fileprivate let menuVC: UIViewController!
+    fileprivate let cartVC = CartViewController()
+    fileprivate let profileVC = ProfileViewController()
+
+    init(menuModule: UIViewController,
+//         cartModule: UIViewController,
+//         profileModule: UIViewController
+    ) {
+        self.menuVC = menuModule
+//        self.cartVC = cartModule
+//        self.profileVC = profileModule
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented. Use init(menuModule:cartModule:profileModule:)")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         

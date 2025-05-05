@@ -7,8 +7,17 @@
 
 import Foundation
 
+//
+//  ProductRepository.swift
+//  clothes_shop
+//
+//  Created by anastasiia talmazan on 2025-03-17.
+//
+
+import Foundation
+
 protocol ProductRepositoryProtocol {
-//    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed]
+    //    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed]
     func getProductDetails(productId: String) async throws -> ProductDetailed
 }
 
@@ -19,15 +28,15 @@ final class ProductRepository: ProductRepositoryProtocol {
         self.networkService = networkService
     }
 
-//    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed] {
-//        let queryParams = ["categoryId": categoryId]
-//        let request = ProductRequest(
-//            endpoint: .byCategory(categoryId: categoryId),
-//            queryParams: queryParams
-//        )
-//        let response: ProductListResponseDTO = try await networkService.request(request)
-//        return response.data.products.map { $0.toDetailed() }
-//    }
+    //    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed] {
+    //        let queryParams = ["categoryId": categoryId]
+    //        let request = ProductRequest(
+    //            endpoint: .byCategory(categoryId: categoryId),
+    //            queryParams: queryParams
+    //        )
+    //        let response: ProductListResponseDTO = try await networkService.request(request)
+    //        return response.data.products.map { $0.toDetailed() }
+    //    }
 
     func getProductDetails(productId: String) async throws -> ProductDetailed {
         let request = ProductRequest(

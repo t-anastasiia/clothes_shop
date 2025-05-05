@@ -8,99 +8,160 @@
 import UIKit
 import SnapKit
 
-class MenuViewController: UIViewController {
-    
-    // Данные для демонстрации
-    // TODO: подцеплять опции с бэка, в админке добавить возможность добавлять/удалять опции
-    private let options = ["Новинки", "Джинсы", "Футболки", "Обувь", "Мужское", "Женское"]
+class MenuViewController: UIViewController, MenuViewProtocol {
+
+    var presenter: MenuPresenterProtocol!
+
+    private let options = ["Men","Women"]
     private var selectedIndex = 0
+
+    private var categories: [Category] = []
+    private let categoryRepo: CategoryRepositoryProtocol = CategoryRepository()
+
+    private lazy var optionsCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 8
+
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .white
+        cv.showsHorizontalScrollIndicator = false
+        cv.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        cv.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
+        cv.delegate = self
+        cv.dataSource = self
+        return cv
+    }()
+
+    private lazy var categoriesCollection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = 8
+
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.backgroundColor = .white
+        cv.showsHorizontalScrollIndicator = false
+        cv.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        cv.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
+        cv.delegate = self
+        cv.dataSource = self
+        return cv
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        setupCollectionView()
-
-        //TODO: cделать с учетом dark/ligt mode
         view.backgroundColor = .white
-    }
 
-    private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 8 // расстояние между cells
-        
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.backgroundColor = .white
-        collection.showsHorizontalScrollIndicator = false
-        collection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16) // делает отступ содержимого внутри
-        
-        
-        collection.delegate = self
-        collection.dataSource = self
-        collection.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
-        return collection
-    }()
-    
-    private func setupCollectionView() {
-        let shadowContainer = UIView()
-        shadowContainer.backgroundColor = .white
-        shadowContainer.layer.shadowColor = UIColor(red: 0x82/255, green: 0x88/255, blue: 0x8E/255, alpha: 0.25).cgColor
-        shadowContainer.layer.shadowOpacity = 1
-        shadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
-        shadowContainer.layer.shadowRadius = 15
-        
-        view.addSubview(shadowContainer)
-        shadowContainer.addSubview(collectionView)
-        
-        collectionView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().inset(12)
+        view.addSubview(optionsCollection)
+        optionsCollection.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide).inset(12)
+            make.leading.trailing.equalToSuperview()
             make.height.equalTo(34)
         }
-        
-        shadowContainer.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
+
+        view.addSubview(categoriesCollection)
+        categoriesCollection.snp.makeConstraints { make in
+            make.top.equalTo(optionsCollection.snp.bottom).offset(16)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(34)
+        }
+
+        fetchCategories(.men)
+    }
+
+    private func fetchCategories(_ endpoint: CategoryEndpoint) {
+        Task {
+            do {
+                categories = try await categoryRepo.getCategories(for: endpoint)
+                categoriesCollection.reloadData()
+            } catch {
+                print("Ошибка загрузки:", error)
+            }
         }
     }
+
+    // MARK: MenuViewProtocol
+    func showLoading() {}
+    func show(categories: [Category]) {}
+    func show(error: String) {}
 }
 
-
-// MARK: - UICollectionViewDelegateFlowLayout, UICollectionViewDataSource
-extension MenuViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return options.count
+// MARK: – UICollectionViewDelegateFlowLayout, DataSource
+extension MenuViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ cv: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return cv == optionsCollection ? options.count : categories.count
     }
-    
-    func collectionView(_ collectionView: UICollectionView,
+
+    func collectionView(_ cv: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChipCell.identifier, for: indexPath) as? ChipCell else {
-            fatalError("Failed to dequeue OptionCell")
+        let cell = cv.dequeueReusableCell(
+            withReuseIdentifier: ChipCell.identifier,
+            for: indexPath
+        ) as! ChipCell
+
+        if cv == optionsCollection {
+            let isSel = indexPath.item == selectedIndex
+            let full = options[indexPath.item]
+            let text = isSel ? full : String(full.prefix(1))
+            cell.configure(text: text, isSelected: isSel)
+        } else {
+            cell.configure(text: categories[indexPath.item].name, isSelected: false)
         }
-        
-        let isSelected = indexPath.item == selectedIndex
-        cell.configure(text: options[indexPath.item], isSelected: isSelected)
+
         return cell
     }
-    
-    func collectionView(_ collectionView: UICollectionView,
+
+    func collectionView(_ cv: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        
-        let text = options[indexPath.item]
-        let width = (text as NSString).size(
-            withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)]
-        ).width + 36 // padding внутри ячейки
-        
-        return CGSize(width: width, height: collectionView.bounds.height)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        selectedIndex = indexPath.item
-        collectionView.reloadData()
+        let height = cv.bounds.height
 
-        // TODO: сообщить Presenter о новом выборе
-        // presenter.didSelectOption(at: selectedIndex)
+        if cv == optionsCollection {
+            let other = (indexPath.item == 0 ? 1 : 0)
+            let otherText = String(options[other].prefix(1))
+            let otherWidth = (otherText as NSString)
+                .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
+                .width + 20
+
+            let spacing = (collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing
+            let insetH = optionsCollection.contentInset.left + optionsCollection.contentInset.right
+
+            if indexPath.item == selectedIndex {
+                let fullWidth = optionsCollection.bounds.width - otherWidth - spacing - insetH
+                return CGSize(width: fullWidth, height: height)
+            } else {
+                let text = String(options[indexPath.item].prefix(1))
+                let width = (text as NSString)
+                    .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
+                    .width + 20
+                return CGSize(width: width, height: height)
+            }
+        } else {
+            let name = categories[indexPath.item].name
+            let width = (name as NSString)
+                .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
+                .width + 20
+            return CGSize(width: width, height: height)
+        }
+    }
+
+    func collectionView(_ cv: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard cv == optionsCollection else {
+            // TODO: обработка подкатегорий...
+            return
+        }
+
+        let old = selectedIndex
+        selectedIndex = indexPath.item
+
+        optionsCollection.performBatchUpdates({
+            optionsCollection.reloadItems(at: [
+                IndexPath(item: old, section: 0),
+                IndexPath(item: selectedIndex, section: 0)
+            ])
+        }, completion: nil)
+
+        let endpoint: CategoryEndpoint = (selectedIndex == 0 ? .men : .women)
+        fetchCategories(endpoint)
     }
 }

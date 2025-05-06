@@ -12,11 +12,11 @@ final class MainConfigurator {
     func configure() -> UIViewController {
         let menuVC = MenuConfigurator.configure()
         let navMenuVC = UINavigationController(rootViewController: menuVC)
+        navMenuVC.navigationBar.isHidden = true
 //        let cartVC = CartConfigurator.configure()
 //        let profileVC = ProfileConfigurator.configure()
 
         let viewController = MainViewController(menuModule: navMenuVC)
-
         return viewController
     }
 }

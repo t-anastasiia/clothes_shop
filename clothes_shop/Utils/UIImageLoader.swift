@@ -15,11 +15,11 @@ final class UIImageLoader {
         }
 
         URLSession.shared.dataTask(with: url) { data, _, error in
-            guard let data = data, let image = UIImage(data: data), error == nil else {
-                completion(placeholder)
-                return
+            if let data = data, let image = UIImage(data: data) {
+                completion(image)
+            } else {
+                completion(nil) 
             }
-            completion(image)
         }.resume()
     }
 }

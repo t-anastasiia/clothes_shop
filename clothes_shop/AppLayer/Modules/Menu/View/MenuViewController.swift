@@ -48,6 +48,11 @@ class MenuViewController: UIViewController, MenuViewProtocol {
         presenter?.didLoadView()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+
     private func setupUI() {
         view.backgroundColor = .white
 
@@ -58,9 +63,15 @@ class MenuViewController: UIViewController, MenuViewProtocol {
         shadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
         shadowContainer.layer.shadowRadius = 15
 
+        view.addSubview(productsTableView)
+
         view.addSubview(shadowContainer)
         shadowContainer.addSubview(categoriesCollection)
-        
+
+        shadowContainer.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+        }
+
         categoriesCollection.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview().inset(12)
@@ -68,13 +79,8 @@ class MenuViewController: UIViewController, MenuViewProtocol {
             make.height.equalTo(34)
         }
 
-        shadowContainer.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-        }
-
-        view.addSubview(productsTableView)
         productsTableView.snp.makeConstraints { make in
-            make.top.equalTo(shadowContainer.snp.bottom).offset(25)
+            make.top.equalTo(shadowContainer.snp.bottom).offset(0)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }

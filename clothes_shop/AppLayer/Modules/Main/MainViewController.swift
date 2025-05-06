@@ -11,7 +11,6 @@ final class MainViewController: UIViewController {
     private let mainTabBar = MainTabBarView()
     private var currentChild: UIViewController?
 
-    /// опции таб бара
     fileprivate let menuVC: UINavigationController!
     fileprivate let cartVC = CartViewController()
     fileprivate let profileVC = ProfileViewController()
@@ -32,12 +31,19 @@ final class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .clear
-        
+        view.backgroundColor = .white
         setupTabBar()
-        
         switchToChild(menuVC)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(hideTabBar),
+                                               name: .hideMainTabBar,
+                                               object: nil)
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(showTabBar),
+                                               name: .showMainTabBar,
+                                               object: nil)
     }
     
     private func setupTabBar() {
@@ -50,10 +56,8 @@ final class MainViewController: UIViewController {
     }
     
     private func switchToChild(_ vc: UIViewController) {
-        
         guard currentChild !== vc else { return }
-        
-        // убираем текущий экран
+
         if let current = currentChild {
             current.willMove(toParent: nil)
             
@@ -64,13 +68,9 @@ final class MainViewController: UIViewController {
                 current.removeFromParent()
             })
         }
-        
-        // добаляем нового
         addChild(vc)
         vc.view.alpha = 0
         view.addSubview(vc.view)
-        
-        // вставляем под таб бар, чтоб он не перекрывался
         view.bringSubviewToFront(mainTabBar)
         
         vc.view.snp.makeConstraints { make in
@@ -86,6 +86,29 @@ final class MainViewController: UIViewController {
         
         currentChild = vc
     }
+
+    @objc private func hideTabBar() {
+        setTabBar(hidden: true)
+    }
+    @objc private func showTabBar() {
+        setTabBar(hidden: false)
+    }
+
+    func setTabBar(hidden: Bool, animated: Bool = true) {
+        let height = mainTabBar.frame.height
+        let offset = hidden ? height : 0
+
+        if animated {
+            UIView.animate(withDuration: 0.3) {
+                self.mainTabBar.transform = CGAffineTransform(translationX: 0, y: offset)
+                self.mainTabBar.alpha = hidden ? 0 : 1
+            }
+        } else {
+            self.mainTabBar.transform = CGAffineTransform(translationX: 0, y: offset)
+            self.mainTabBar.alpha = hidden ? 0 : 1
+        }
+    }
+
 }
 
 // MARK: - MainTabBarViewDelegate

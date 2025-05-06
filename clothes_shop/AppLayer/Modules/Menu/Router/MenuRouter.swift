@@ -13,8 +13,8 @@ protocol MenuRouterProtocol {
 
 class MenuRouter: MenuRouterProtocol {
     func openProductDetails(navigationController: UINavigationController, with product: Product) {
-        let configurator = ProductConfigurator()
-        let productVC = configurator.configure(with: product)
+        let productVC = ProductConfigurator().configure(with: product)
+        NotificationCenter.default.post(name: .hideMainTabBar, object: nil)
         navigationController.pushViewController(productVC, animated: true)
     }
 }

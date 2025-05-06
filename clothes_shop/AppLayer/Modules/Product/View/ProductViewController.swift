@@ -17,8 +17,9 @@ class ProductViewController: UIViewController {
     private var sizes: [SizeDetailed] = []
     private var selectedSizeIndex: Int?
 
-    // MARK: - Elements
+    private var bottomBarHeightConstraint: Constraint?
 
+    // MARK: - Elements
     private let markLabel: UILabel = {
         let label = UILabel()
         label.text = "NEW"
@@ -45,7 +46,6 @@ class ProductViewController: UIViewController {
     }()
 
     private let infoButton: UIButton = {
-        // TODO: заменить на иконку из макета
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "info.circle")
         config.baseForegroundColor = UIColor(named: "BrownLight")
@@ -92,25 +92,36 @@ class ProductViewController: UIViewController {
 
     private let addToCartButton: UIButton = {
         let button = UIButton()
-        button.setTitle("В корзину · 0 ₽", for: .normal)
+        button.setTitle("В корзину · 0 $", for: .normal)
         button.backgroundColor = UIColor(named: "BrownLight")
         button.tintColor = UIColor(named: "Text/White")
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 12
+        button.titleLabel?.adjustsFontSizeToFitWidth = true
+        button.titleLabel?.lineBreakMode = .byTruncatingTail
+        button.titleLabel?.numberOfLines = 1
         return button
     }()
 
     // MARK: - Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         sutupUI()
+        navigationController?.navigationBar.tintColor = UIColor(named: "BrownDark")
         setupAddToCartView()
         presenter.viewDidLoad()
     }
 
-    // MARK: - UI Setup
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
 
+        if self.isMovingFromParent {
+            NotificationCenter.default.post(name: .showMainTabBar, object: nil)
+        }
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+
+    // MARK: - UI Setup
     private func sutupUI() {
         view.backgroundColor = .white
 
@@ -168,7 +179,7 @@ class ProductViewController: UIViewController {
             make.left.right.equalToSuperview()
             make.top.equalToSuperview().inset(12)
             make.bottom.equalTo(view.safeAreaLayoutGuide).inset(32)
-            make.height.equalTo(80)
+            bottomBarHeightConstraint = make.height.equalTo(80).constraint
         }
 
         addToCartButton.snp.makeConstraints { make in
@@ -225,7 +236,6 @@ extension ProductViewController: UICollectionViewDelegateFlowLayout, UICollectio
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         selectedSizeIndex = indexPath.item
         collectionView.reloadData()
-        // TODO: сообщить Presenter о новом выборе
     }
 }
 
@@ -235,21 +245,39 @@ extension ProductViewController: ProductViewProtocol {
         productName.text = product.title
         productDescription.text = product.description
         selectedSizeIndex = nil
-        addToCartButton.setTitle("В корзину · \(Int(product.price)) ₽", for: .normal)
+        addToCartButton.setTitle("Add to cart · \(product.price) $", for: .normal)
+        self.title = product.title
 
         imageLoader.loadImage(from: product.image) { [weak self] image in
             DispatchQueue.main.async {
                 self?.productImage.image = image
-            }
 
-            // после загрузки картинки
-            self?.sizes = [
-                SizeDetailed(brandSize: "S", isAvailable: true),
-                SizeDetailed(brandSize: "M", isAvailable: true),
-                SizeDetailed(brandSize: "L", isAvailable: true),
-                SizeDetailed(brandSize: "XL", isAvailable: true)
-            ]
-            self?.sizeCollectionView.reloadData()
+                if product.category == "men's clothing" || product.category == "women's clothing" {
+                    self?.sizes = [
+                        SizeDetailed(brandSize: "S", isAvailable: true),
+                        SizeDetailed(brandSize: "M", isAvailable: true),
+                        SizeDetailed(brandSize: "L", isAvailable: true),
+                        SizeDetailed(brandSize: "XL", isAvailable: true)
+                    ]
+                } else {
+                    self?.sizes = []
+                }
+
+                let shouldShowSizes = !(self?.sizes.isEmpty ?? true)
+                self?.bottomBarHeightConstraint?.update(offset: shouldShowSizes ? 80 : 48)
+                self?.sizeCollectionView.isHidden = !shouldShowSizes
+                self?.divider.isHidden = !shouldShowSizes
+                self?.sizeCollectionView.snp.updateConstraints { make in
+                    make.height.equalTo(shouldShowSizes ? 34 : 0)
+                }
+                self?.divider.snp.updateConstraints { make in
+                    make.height.equalTo(shouldShowSizes ? 1 : 0)
+                }
+                self?.addToCartButton.snp.updateConstraints { make in
+                    make.top.equalTo(self?.divider.snp.bottom ?? 0).offset(shouldShowSizes ? 12 : 0)
+                }
+                self?.sizeCollectionView.reloadData()
+            }
         }
     }
 }

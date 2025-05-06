@@ -8,31 +8,32 @@
 import Foundation
 
 enum ProductEndpoint {
-    case byCategory(categoryId: String)
-    case details(productId: String)
-    
+    case list
+    case details(id: Int)
+
     var path: String {
         switch self {
-        case .byCategory:
-            return "/marketplace/product/bycategory"
-        case .details:
-            return "/product/description"
+            case .list:
+                return "/products"
+            case .details(let id):
+                return "/products/\(id)"
         }
+    }
+
+    var queryParameters: [String:String] {
+        return [:]
     }
 }
 
 struct ProductRequest: RequestProtocol {
     let endpoint: ProductEndpoint
-    let queryParams: [String: String]
-    
     var path: String { endpoint.path }
     var method: HTTPMethod { .get }
-    var headers: [String: String] { NetworkConfig.defaultHeaders }
-    var queryParameters: [String: String] { queryParams }
+    var headers: [String:String] { NetworkConfig.defaultHeaders }
+    var queryParameters: [String:String] { endpoint.queryParameters }
     var body: Data? { nil }
-    
-    init(endpoint: ProductEndpoint, queryParams: [String: String] = [:]) {
+
+    init(endpoint: ProductEndpoint) {
         self.endpoint = endpoint
-        self.queryParams = queryParams
     }
 }

@@ -15,6 +15,7 @@ enum MenuConfigurator {
         let presenter = MenuPresenter(interactor: interactor, router: router)
 
         view.presenter = presenter
+        view.router = router
         presenter.view = view
         interactor.output = presenter
 

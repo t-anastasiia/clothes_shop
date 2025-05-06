@@ -25,7 +25,7 @@ final class ProductPresenter: ProductPresenterProtocol {
 }
 
 extension ProductPresenter: ProductInteractorOutputProtocol {
-    func didFetchProduct(_ product: ProductDetailed) {
+    func didFetchProduct(_ product: Product) {
         view?.displayProduct(product)
     }
 }

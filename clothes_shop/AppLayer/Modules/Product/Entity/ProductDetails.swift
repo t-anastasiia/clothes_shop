@@ -1,20 +1,15 @@
 import Foundation
 
-struct ProductDetailed {
+struct Product {
     let id: Int
-    let name: String
+    let title: String
+    let price: Double
     let description: String
-    let price: String
-    let imageUrl: String?
-    let sizes: [SizeDetailed]
-    let isInStock: Bool
-    let isAvailable: Bool
+    let category: String
+    let image: URL
 }
 
-
 struct SizeDetailed {
-    let id: Int
     let brandSize: String
-    let displayText: String
     let isAvailable: Bool
 }

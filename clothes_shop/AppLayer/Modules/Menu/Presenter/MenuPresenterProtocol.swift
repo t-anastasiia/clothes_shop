@@ -9,5 +9,5 @@ import Foundation
 
 protocol MenuPresenterProtocol: AnyObject {
     func didLoadView()
-    func didSelectSegment(index: Int)
+    func didSelectCategory(_ category: Category)
 }

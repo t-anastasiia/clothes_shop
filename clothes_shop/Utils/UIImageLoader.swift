@@ -8,8 +8,8 @@
 import UIKit
 
 final class UIImageLoader {
-    func loadImage(from urlString: String?, placeholder: UIImage? = UIImage(systemName: "photo"), completion: @escaping (UIImage?) -> Void) {
-        guard let urlString = urlString, let url = URL(string: urlString) else {
+    func loadImage(from url: URL?, placeholder: UIImage? = UIImage(systemName: "photo"), completion: @escaping (UIImage?) -> Void) {
+        guard let url = url else {
             completion(placeholder)
             return
         }

@@ -16,9 +16,9 @@ class ProductViewController: UIViewController {
 
     private var sizes: [SizeDetailed] = []
     private var selectedSizeIndex: Int?
-    
+
     // MARK: - Elements
-    
+
     private let markLabel: UILabel = {
         let label = UILabel()
         label.text = "NEW"
@@ -30,32 +30,29 @@ class ProductViewController: UIViewController {
         label.textAlignment = .center
         return label
     }()
-    
+
     private let productImage: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
-    
+
     private let productName: UILabel = {
         let label = UILabel()
         label.font = UIFont.boldSystemFont(ofSize: 24)
         label.textColor = UIColor(named: "Text/Primary")
         return label
     }()
-    
+
     private let infoButton: UIButton = {
-        // TODO: заменть на иконку из макета
+        // TODO: заменить на иконку из макета
         var config = UIButton.Configuration.plain()
         config.image = UIImage(systemName: "info.circle")
         config.baseForegroundColor = UIColor(named: "BrownLight")
         config.background.backgroundColor = UIColor(named: "Beige")
-
-        let button = UIButton(configuration: config)
-        
-        return button
+        return UIButton(configuration: config)
     }()
-    
+
     private let productDescription: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 17)
@@ -63,7 +60,7 @@ class ProductViewController: UIViewController {
         label.numberOfLines = 0
         return label
     }()
-    
+
     private let bottomBar: UIView = {
         let view = UIView()
         view.backgroundColor = .white
@@ -76,15 +73,15 @@ class ProductViewController: UIViewController {
         layout.minimumInteritemSpacing = 8
         layout.minimumLineSpacing = 8
 
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.backgroundColor = .clear
-        collectionView.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.alwaysBounceVertical = false
-        collectionView.contentInsetAdjustmentBehavior = .never
-        return collectionView
+        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        cv.showsHorizontalScrollIndicator = false
+        cv.backgroundColor = .clear
+        cv.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
+        cv.delegate = self
+        cv.dataSource = self
+        cv.alwaysBounceVertical = false
+        cv.contentInsetAdjustmentBehavior = .never
+        return cv
     }()
 
     private let divider: UIView = {
@@ -95,65 +92,63 @@ class ProductViewController: UIViewController {
 
     private let addToCartButton: UIButton = {
         let button = UIButton()
-        button.setTitle("В корзину · 4950 ₽", for: .normal)
+        button.setTitle("В корзину · 0 ₽", for: .normal)
         button.backgroundColor = UIColor(named: "BrownLight")
         button.tintColor = UIColor(named: "Text/White")
         button.setTitleColor(.white, for: .normal)
         button.layer.cornerRadius = 12
         return button
     }()
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         sutupUI()
         setupAddToCartView()
         presenter.viewDidLoad()
     }
-    
-    // MARK: - Methods
-    
+
+    // MARK: - UI Setup
+
     private func sutupUI() {
         view.backgroundColor = .white
-        
+
         view.addSubview(markLabel)
         view.addSubview(productImage)
         view.addSubview(productName)
         view.addSubview(infoButton)
         view.addSubview(productDescription)
-        
-        // MARK: - Constraints
-        
+
         markLabel.snp.makeConstraints { make in
             make.top.left.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.height.equalTo(24)
             make.width.greaterThanOrEqualTo(markLabel.intrinsicContentSize.width + 12)
         }
-        
+
         productImage.snp.makeConstraints { make in
             make.top.left.right.equalTo(view.safeAreaLayoutGuide)
             make.height.equalTo(250)
         }
-        
+
         productName.snp.makeConstraints { make in
             make.left.equalToSuperview().offset(16)
             make.top.equalTo(productImage.snp.bottom).offset(8)
             make.right.equalTo(infoButton.snp.left).offset(-8)
         }
-        
+
         infoButton.snp.makeConstraints { make in
             make.centerY.equalTo(productName)
             make.right.equalToSuperview().offset(-16)
             make.width.height.equalTo(32)
         }
-        
+
         productDescription.snp.makeConstraints { make in
             make.top.equalTo(productName.snp.bottom).offset(8)
             make.left.right.equalToSuperview().inset(16)
         }
     }
-    
+
     private func setupAddToCartView() {
         let shadowContainer = UIView()
         shadowContainer.backgroundColor = .white
@@ -180,7 +175,7 @@ class ProductViewController: UIViewController {
             make.top.left.right.equalToSuperview().inset(16)
             make.height.equalTo(48)
         }
-        
+
         shadowContainer.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
         }
@@ -212,17 +207,18 @@ extension ProductViewController: UICollectionViewDelegateFlowLayout, UICollectio
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChipCell.identifier, for: indexPath) as? ChipCell else {
-            return UICollectionViewCell()
-        }
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ChipCell.identifier, for: indexPath) as! ChipCell
+        let size = sizes[indexPath.item]
         let isSelected = indexPath.item == selectedSizeIndex
-        cell.configure(text: sizes[indexPath.item].brandSize, isSelected: isSelected)
+        cell.configure(text: size.brandSize, isSelected: isSelected)
         return cell
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let text = sizes[indexPath.item].brandSize
-        let width = (text as NSString).size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)]).width + 36
+        let width = (text as NSString)
+            .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
+            .width + 36
         return CGSize(width: width, height: collectionView.bounds.height)
     }
 
@@ -235,24 +231,25 @@ extension ProductViewController: UICollectionViewDelegateFlowLayout, UICollectio
 
 // MARK: - ProductViewProtocol
 extension ProductViewController: ProductViewProtocol {
-    func displayProduct(_ product: ProductDetailed) {
-        productName.text = product.name
+    func displayProduct(_ product: Product) {
+        productName.text = product.title
         productDescription.text = product.description
-        sizes = product.sizes
-        selectedSizeIndex = 0
-        addToCartButton.setTitle("Add to cart · \(product.price)", for: .normal)
+        selectedSizeIndex = nil
+        addToCartButton.setTitle("В корзину · \(Int(product.price)) ₽", for: .normal)
 
-        imageLoader.loadImage(from: product.imageUrl) { [weak self] image in
+        imageLoader.loadImage(from: product.image) { [weak self] image in
             DispatchQueue.main.async {
                 self?.productImage.image = image
             }
-        }
 
-        sizeCollectionView.reloadData()
-
-        AppLogger.product("Размеров пришло: \(product.sizes.count)")
-        for size in product.sizes {
-            AppLogger.product("Размер: \(size.brandSize), доступен: \(size.isAvailable)")
+            // после загрузки картинки
+            self?.sizes = [
+                SizeDetailed(brandSize: "S", isAvailable: true),
+                SizeDetailed(brandSize: "M", isAvailable: true),
+                SizeDetailed(brandSize: "L", isAvailable: true),
+                SizeDetailed(brandSize: "XL", isAvailable: true)
+            ]
+            self?.sizeCollectionView.reloadData()
         }
     }
 }

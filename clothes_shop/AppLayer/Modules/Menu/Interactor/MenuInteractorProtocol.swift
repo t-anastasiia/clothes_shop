@@ -8,9 +8,11 @@
 import Foundation
 
 protocol MenuInteractorInput {
-    func fetchCategories(for endpoint: CategoryEndpoint)
+    func fetchCategories()
+    func fetchProducts(for category: Category)
 }
 protocol MenuInteractorOutput: AnyObject {
     func didFetch(categories: [Category])
     func didFail(error: Error)
+    func didFetchProducts(_ products: [Product])
 }

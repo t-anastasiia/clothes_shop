@@ -8,25 +8,25 @@
 import Foundation
 
 enum CategoryEndpoint {
-    case men, women
+    case list
+    case byCategory(_ category: String)
 
     var path: String {
         switch self {
-            case .men:   return "/marketplace/categories/men"
-            case .women: return "/marketplace/categories/women"
+            case .list:
+                return "/products/categories"
+            case .byCategory(let category):
+                return "/products/category/\(category)"
         }
     }
+    var queryParameters: [String:String] { [:] }
 }
 
 struct CategoryRequest: RequestProtocol {
     let endpoint: CategoryEndpoint
     var path: String { endpoint.path }
     var method: HTTPMethod { .get }
-    var headers: [String: String] { NetworkConfig.defaultHeaders }
-    var queryParameters: [String: String] { [:] }
+    var headers: [String:String] { NetworkConfig.defaultHeaders }
+    var queryParameters: [String:String] { endpoint.queryParameters }
     var body: Data? { nil }
-
-    init(endpoint: CategoryEndpoint) {
-        self.endpoint = endpoint
-    }
 }

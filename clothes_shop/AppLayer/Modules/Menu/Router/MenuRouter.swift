@@ -8,11 +8,13 @@
 import UIKit
 
 protocol MenuRouterProtocol {
-    func openSubcategory(_ sub: Subcategory, from view: UIViewController)
+    func openProductDetails(navigationController: UINavigationController, with product: Product)
 }
 
 class MenuRouter: MenuRouterProtocol {
-    func openSubcategory(_ sub: Subcategory, from view: UIViewController) {
-        // view.navigationController?.pushViewController(vc, animated: true)
+    func openProductDetails(navigationController: UINavigationController, with product: Product) {
+        let configurator = ProductConfigurator()
+        let productVC = configurator.configure(with: product)
+        navigationController.pushViewController(productVC, animated: true)
     }
 }

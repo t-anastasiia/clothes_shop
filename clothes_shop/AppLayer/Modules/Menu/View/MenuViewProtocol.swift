@@ -11,4 +11,5 @@ protocol MenuViewProtocol: AnyObject {
     func showLoading()
     func show(categories: [Category])
     func show(error: String)
+    func showProducts(_ products: [Product])
 }

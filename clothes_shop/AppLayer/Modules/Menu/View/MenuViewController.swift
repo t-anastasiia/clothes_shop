@@ -11,157 +11,151 @@ import SnapKit
 class MenuViewController: UIViewController, MenuViewProtocol {
 
     var presenter: MenuPresenterProtocol!
-
-    private let options = ["Men","Women"]
-    private var selectedIndex = 0
+    var router: MenuRouterProtocol!
 
     private var categories: [Category] = []
-    private let categoryRepo: CategoryRepositoryProtocol = CategoryRepository()
-
-    private lazy var optionsCollection: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 8
-
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .white
-        cv.showsHorizontalScrollIndicator = false
-        cv.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        cv.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
-        cv.delegate = self
-        cv.dataSource = self
-        return cv
-    }()
+    private var selectedCategoryIndex: Int?
+    private var products: [Product] = []
 
     private lazy var categoriesCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
         layout.minimumInteritemSpacing = 8
 
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.backgroundColor = .white
-        cv.showsHorizontalScrollIndicator = false
-        cv.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-        cv.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
-        cv.delegate = self
-        cv.dataSource = self
-        return cv
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.backgroundColor = .white
+        collection.showsHorizontalScrollIndicator = false
+        collection.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+
+        collection.delegate = self
+        collection.dataSource = self
+        collection.register(ChipCell.self, forCellWithReuseIdentifier: ChipCell.identifier)
+        return collection
+    }()
+
+    private lazy var productsTableView: UITableView = {
+        let tv = UITableView()
+        tv.register(ProductCell.self, forCellReuseIdentifier: ProductCell.identifier)
+        tv.dataSource = self
+        tv.delegate = self
+        tv.tableFooterView = UIView()
+        return tv
     }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
-
-        view.addSubview(optionsCollection)
-        optionsCollection.snp.makeConstraints { make in
-            make.top.equalTo(view.safeAreaLayoutGuide).inset(12)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(34)
-        }
-
-        view.addSubview(categoriesCollection)
-        categoriesCollection.snp.makeConstraints { make in
-            make.top.equalTo(optionsCollection.snp.bottom).offset(16)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(34)
-        }
-
-        fetchCategories(.men)
+        setupUI()
+        presenter?.didLoadView()
     }
 
-    private func fetchCategories(_ endpoint: CategoryEndpoint) {
-        Task {
-            do {
-                categories = try await categoryRepo.getCategories(for: endpoint)
-                categoriesCollection.reloadData()
-            } catch {
-                print("Ошибка загрузки:", error)
-            }
+    private func setupUI() {
+        view.backgroundColor = .white
+
+        let shadowContainer = UIView()
+        shadowContainer.backgroundColor = .white
+        shadowContainer.layer.shadowColor = UIColor(red: 0x82/255, green: 0x88/255, blue: 0x8E/255, alpha: 0.25).cgColor
+        shadowContainer.layer.shadowOpacity = 1
+        shadowContainer.layer.shadowOffset = CGSize(width: 0, height: 2)
+        shadowContainer.layer.shadowRadius = 15
+
+        view.addSubview(shadowContainer)
+        shadowContainer.addSubview(categoriesCollection)
+        
+        categoriesCollection.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(12)
+            make.top.equalTo(view.safeAreaLayoutGuide).inset(12)
+            make.height.equalTo(34)
+        }
+
+        shadowContainer.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+        }
+
+        view.addSubview(productsTableView)
+        productsTableView.snp.makeConstraints { make in
+            make.top.equalTo(shadowContainer.snp.bottom).offset(25)
+            make.leading.trailing.bottom.equalToSuperview()
         }
     }
 
     // MARK: MenuViewProtocol
-    func showLoading() {}
-    func show(categories: [Category]) {}
-    func show(error: String) {}
+    func showLoading() {
+    }
+
+    func show(categories: [Category]) {
+        DispatchQueue.main.async {
+            self.categories = categories
+            self.categoriesCollection.reloadData()
+        }
+    }
+
+    func show(error: String) {
+    }
+
+    func showProducts(_ products: [Product]) {
+        self.products = products
+        DispatchQueue.main.async {
+            self.productsTableView.reloadData()
+        }
+    }
 }
 
 // MARK: – UICollectionViewDelegateFlowLayout, DataSource
 extension MenuViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ cv: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return cv == optionsCollection ? options.count : categories.count
+        categories.count
     }
 
     func collectionView(_ cv: UICollectionView,
                         cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = cv.dequeueReusableCell(
-            withReuseIdentifier: ChipCell.identifier,
-            for: indexPath
-        ) as! ChipCell
-
-        if cv == optionsCollection {
-            let isSel = indexPath.item == selectedIndex
-            let full = options[indexPath.item]
-            let text = isSel ? full : String(full.prefix(1))
-            cell.configure(text: text, isSelected: isSel)
-        } else {
-            cell.configure(text: categories[indexPath.item].name, isSelected: false)
-        }
-
+        let cell = cv.dequeueReusableCell(withReuseIdentifier: ChipCell.identifier,
+                                          for: indexPath) as! ChipCell
+        let name = categories[indexPath.item].name
+        let isSelected = indexPath.item == selectedCategoryIndex
+        cell.configure(text: name, isSelected: isSelected)
         return cell
     }
 
-    func collectionView(_ cv: UICollectionView,
+    func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = cv.bounds.height
-
-        if cv == optionsCollection {
-            let other = (indexPath.item == 0 ? 1 : 0)
-            let otherText = String(options[other].prefix(1))
-            let otherWidth = (otherText as NSString)
-                .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
-                .width + 20
-
-            let spacing = (collectionViewLayout as! UICollectionViewFlowLayout).minimumInteritemSpacing
-            let insetH = optionsCollection.contentInset.left + optionsCollection.contentInset.right
-
-            if indexPath.item == selectedIndex {
-                let fullWidth = optionsCollection.bounds.width - otherWidth - spacing - insetH
-                return CGSize(width: fullWidth, height: height)
-            } else {
-                let text = String(options[indexPath.item].prefix(1))
-                let width = (text as NSString)
-                    .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
-                    .width + 20
-                return CGSize(width: width, height: height)
-            }
-        } else {
-            let name = categories[indexPath.item].name
-            let width = (name as NSString)
-                .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
-                .width + 20
-            return CGSize(width: width, height: height)
-        }
+        let name = categories[indexPath.item].name
+        let width = (name as NSString)
+            .size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)])
+            .width + 36
+        return CGSize(width: width, height: collectionView.bounds.height)
     }
 
     func collectionView(_ cv: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard cv == optionsCollection else {
-            // TODO: обработка подкатегорий...
-            return
+        selectedCategoryIndex = indexPath.item
+        cv.reloadData()
+        let category = categories[indexPath.item]
+        presenter.didSelectCategory(category)
+    }
+}
+
+// MARK: — UITableViewDataSource, UITableViewDelegate
+extension MenuViewController: UITableViewDataSource {
+    func tableView(_ tv: UITableView, numberOfRowsInSection section: Int) -> Int {
+        products.count
+    }
+    func tableView(_ tv: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tv.dequeueReusableCell(withIdentifier: ProductCell.identifier, for: indexPath) as! ProductCell
+        let product = products[indexPath.row]
+        cell.configure(with: product)
+        return cell
+    }
+}
+
+extension MenuViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedProduct = products[indexPath.row]
+        if let nav = self.parent as? UINavigationController {
+            print("✅ Навигация доступна, открываем продукт:", selectedProduct.title)
+            router.openProductDetails(navigationController: nav, with: selectedProduct)
+        } else {
+            print("❌ Навигация недоступна")
         }
-
-        let old = selectedIndex
-        selectedIndex = indexPath.item
-
-        optionsCollection.performBatchUpdates({
-            optionsCollection.reloadItems(at: [
-                IndexPath(item: old, section: 0),
-                IndexPath(item: selectedIndex, section: 0)
-            ])
-        }, completion: nil)
-
-        let endpoint: CategoryEndpoint = (selectedIndex == 0 ? .men : .women)
-        fetchCategories(endpoint)
     }
 }

@@ -12,8 +12,6 @@ final class MenuPresenter: MenuPresenterProtocol {
     private var interactor: MenuInteractorInput
     private var router: MenuRouterProtocol
 
-    private let options: [CategoryEndpoint] = [.men, .women]
-
     init(interactor: MenuInteractorInput, router: MenuRouterProtocol) {
         self.interactor = interactor
         self.router = router
@@ -21,12 +19,12 @@ final class MenuPresenter: MenuPresenterProtocol {
 
     func didLoadView() {
         view?.showLoading()
-        interactor.fetchCategories(for: options[0])
+        interactor.fetchCategories()
     }
 
-    func didSelectSegment(index: Int) {
+    func didSelectCategory(_ category: Category) {
         view?.showLoading()
-        interactor.fetchCategories(for: options[index])
+        interactor.fetchProducts(for: category)
     }
 }
 
@@ -36,5 +34,8 @@ extension MenuPresenter: MenuInteractorOutput {
     }
     func didFail(error: Error) {
         view?.show(error: error.localizedDescription)
+    }
+    func didFetchProducts(_ products: [Product]) {
+        view?.showProducts(products)
     }
 }

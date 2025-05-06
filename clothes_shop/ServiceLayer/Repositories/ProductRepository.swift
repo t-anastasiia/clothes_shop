@@ -7,18 +7,9 @@
 
 import Foundation
 
-//
-//  ProductRepository.swift
-//  clothes_shop
-//
-//  Created by anastasiia talmazan on 2025-03-17.
-//
-
-import Foundation
-
 protocol ProductRepositoryProtocol {
-    //    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed]
-    func getProductDetails(productId: String) async throws -> ProductDetailed
+    func fetchAll() async throws -> [Product]
+    func fetchDetails(id: Int) async throws -> Product
 }
 
 final class ProductRepository: ProductRepositoryProtocol {
@@ -28,28 +19,15 @@ final class ProductRepository: ProductRepositoryProtocol {
         self.networkService = networkService
     }
 
-    //    func getProductsByCategory(categoryId: String) async throws -> [ProductDetailed] {
-    //        let queryParams = ["categoryId": categoryId]
-    //        let request = ProductRequest(
-    //            endpoint: .byCategory(categoryId: categoryId),
-    //            queryParams: queryParams
-    //        )
-    //        let response: ProductListResponseDTO = try await networkService.request(request)
-    //        return response.data.products.map { $0.toDetailed() }
-    //    }
-
-    func getProductDetails(productId: String) async throws -> ProductDetailed {
-        let request = ProductRequest(
-            endpoint: .details(productId: productId),
-            queryParams: ["productId": productId]
-        )
-        let response: ProductDetailsResponseDTO = try await networkService.request(request)
-        return response.data.toDetailed()
+    func fetchAll() async throws -> [Product] {
+        let req = ProductRequest(endpoint: .list)
+        let dtos: [ProductDTO] = try await networkService.request(req)
+        return dtos.map { $0.toDomain() }
     }
-}
 
-struct ProductDetailsResponseDTO: Codable {
-    let data: ProductDTO
-    let message: String?
-    let error: String?
+    func fetchDetails(id: Int) async throws -> Product {
+        let req = ProductRequest(endpoint: .details(id: id))
+        let dto: ProductDTO = try await networkService.request(req)
+        return dto.toDomain()
+    }
 }

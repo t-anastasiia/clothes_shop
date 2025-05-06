@@ -8,17 +8,14 @@
 import UIKit
 
 final class ProductRouter: ProductRouterProtocol {
-    
-    static func createModule() -> UIViewController {
+    static func createModule(with product: Product) -> UIViewController {
         let view = ProductViewController()
-        let repository = ProductRepository() 
-        let interactor = ProductInteractor(repository: repository)
+        let interactor = ProductInteractor(product: product)
         let router = ProductRouter()
         let presenter = ProductPresenter(view: view, interactor: interactor, router: router)
-        
+
         view.presenter = presenter
-        interactor.presenter = presenter
-        
+        interactor.output = presenter
         return view
     }
 }

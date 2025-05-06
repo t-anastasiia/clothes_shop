@@ -9,11 +9,4 @@ import Foundation
 
 struct Category {
     let name: String
-    let url: String?
-    let subcategories: [Subcategory]
-}
-struct Subcategory {
-    let name: String
-    let id: String
-    let url: String
 }

@@ -9,6 +9,7 @@ import Foundation
 
 protocol CategoryRepositoryProtocol {
     func getCategories(for endpoint: CategoryEndpoint) async throws -> [Category]
+    func fetchByCategorySlug(_ slug: String) async throws -> [Product]
 }
 
 final class CategoryRepository: CategoryRepositoryProtocol {
@@ -20,7 +21,13 @@ final class CategoryRepository: CategoryRepositoryProtocol {
 
     func getCategories(for endpoint: CategoryEndpoint) async throws -> [Category] {
         let request = CategoryRequest(endpoint: endpoint)
-        let dto: CategoriesResponseDTO = try await networkService.request(request)
-        return dto.data.categories.map { $0.toDomain() }
+        let names: [String] = try await networkService.request(request)
+        return names.map { Category(name: $0) }
+    }
+
+    func fetchByCategorySlug(_ slug: String) async throws -> [Product] {
+        let req = CategoryRequest(endpoint: .byCategory(slug))
+        let dtos: [ProductDTO] = try await networkService.request(req)
+        return dtos.map { $0.toDomain() }
     }
 }

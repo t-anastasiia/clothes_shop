@@ -12,11 +12,11 @@ final class MainViewController: UIViewController {
     private var currentChild: UIViewController?
 
     /// опции таб бара
-    fileprivate let menuVC: UIViewController!
+    fileprivate let menuVC: UINavigationController!
     fileprivate let cartVC = CartViewController()
     fileprivate let profileVC = ProfileViewController()
 
-    init(menuModule: UIViewController,
+    init(menuModule: UINavigationController,
 //         cartModule: UIViewController,
 //         profileModule: UIViewController
     ) {

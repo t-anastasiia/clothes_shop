@@ -16,7 +16,7 @@ final class MainViewController: UIViewController {
     fileprivate let cartVC = CartViewController()
     fileprivate let profileVC = ProfileViewController()
 
-    init(menuModule: UINavigationController,
+    init(menuModule: UINavigationController
 //         cartModule: UIViewController,
 //         profileModule: UIViewController
     ) {

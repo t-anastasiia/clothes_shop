@@ -152,10 +152,7 @@ extension MenuViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedProduct = products[indexPath.row]
         if let nav = self.parent as? UINavigationController {
-            print("✅ Навигация доступна, открываем продукт:", selectedProduct.title)
             router.openProductDetails(navigationController: nav, with: selectedProduct)
-        } else {
-            print("❌ Навигация недоступна")
         }
     }
 }

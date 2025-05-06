@@ -1,2 +1,2 @@
 # clothes_shop
-Магазин одежды с рекомендательной системой
+Clothes shop based on opened API https://fakestoreapi.com/

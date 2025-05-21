@@ -7,88 +7,38 @@
 
 import UIKit
 
-final class MainViewController: UIViewController {
+final class MainViewController: UITabBarController {
     
-    /// опции таб бара
-    private let menuVC = MenuViewController()
+    private let menuVC: UINavigationController
     private let cartVC = CartViewController()
     private let profileVC = ProfileViewController()
-    
-    /// текущая опция таб бара
-    private var currentChild: UIViewController?
-    
-    /// таб бар
-    private let mainTabBar = MainTabBarView()
-    
+
+    init(menuModule: UINavigationController) {
+        self.menuVC = menuModule
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented. Use init(menuModule:)")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        view.backgroundColor = .clear
-        
+        setupViewControllers()
         setupTabBar()
+    }
+    
+    private func setupViewControllers() {
+        menuVC.tabBarItem = UITabBarItem(title: "Меню", image: UIImage(systemName: "list.bullet"), tag: 0)
+        cartVC.tabBarItem = UITabBarItem(title: "Корзина", image: UIImage(systemName: "cart"), tag: 1)
+        profileVC.tabBarItem = UITabBarItem(title: "Профиль", image: UIImage(systemName: "person"), tag: 2)
         
-        switchToChild(menuVC)
+        viewControllers = [menuVC, cartVC, profileVC]
     }
     
     private func setupTabBar() {
-        view.addSubview(mainTabBar)
-        mainTabBar.delegate = self
-        
-        mainTabBar.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-        }
-    }
-    
-    private func switchToChild(_ vc: UIViewController) {
-        
-        guard currentChild !== vc else { return }
-        
-        // убираем текущий экран
-        if let current = currentChild {
-            current.willMove(toParent: nil)
-            
-            UIView.animate(withDuration: 0.2, animations: {
-                current.view.alpha = 0
-            }, completion: { _ in
-                current.view.removeFromSuperview()
-                current.removeFromParent()
-            })
-        }
-        
-        // добаляем нового
-        addChild(vc)
-        vc.view.alpha = 0
-        view.addSubview(vc.view)
-        
-        // вставляем под таб бар, чтоб он не перекрывался
-        view.bringSubviewToFront(mainTabBar)
-        
-        vc.view.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.bottom.equalTo(mainTabBar.snp.top)
-        }
-        
-        UIView.animate(withDuration: 0.2) {
-            vc.view.alpha = 1
-        }
-        
-        vc.didMove(toParent: self)
-        
-        currentChild = vc
-    }
-}
-
-// MARK: - MainTabBarViewDelegate
-extension MainViewController: MainTabBarViewDelegate {
-    func didTapMenuIcon() {
-        switchToChild(menuVC)
-    }
-    
-    func didTapCartIcon() {
-        switchToChild(cartVC)
-    }
-    
-    func didTapProfileIcon() {
-        switchToChild(profileVC)
+        tabBar.tintColor = UIColor(named: "BrownLight")
+        tabBar.unselectedItemTintColor = UIColor(named: "Text/Second")
+        tabBar.backgroundColor = .white
     }
 }

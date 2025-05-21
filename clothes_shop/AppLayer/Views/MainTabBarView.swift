@@ -90,7 +90,7 @@ class MainTabBarView: UIView {
         
         addSubview(stackView)
         
-        layer.shadowColor = UIColor(red: 130/255, green: 136/255, blue: 142/255, alpha: 0.25).cgColor
+        layer.shadowColor = UIColor(named: "Shadow")!.cgColor
         layer.shadowOpacity = 1
         layer.shadowOffset = CGSize(width: 0, height: -2)
         layer.shadowRadius = 15

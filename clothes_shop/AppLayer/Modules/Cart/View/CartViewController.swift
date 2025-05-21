@@ -38,7 +38,7 @@ class CartViewController: UIViewController {
     private func setupNavigationBar() {
         let customNavBar = UIView()
         customNavBar.backgroundColor = .white //TODO: cделать с учетом dark/ligt mode
-        customNavBar.layer.shadowColor = UIColor(red: 0x82/255, green: 0x88/255, blue: 0x8E/255, alpha: 0.25).cgColor
+        customNavBar.layer.shadowColor = UIColor(named: "Shadow")!.cgColor
         customNavBar.layer.shadowOpacity = 1
         customNavBar.layer.shadowOffset = CGSize(width: 0, height: 2)
         customNavBar.layer.shadowRadius = 15

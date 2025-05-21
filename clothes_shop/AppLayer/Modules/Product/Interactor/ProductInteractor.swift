@@ -8,24 +8,14 @@
 import Foundation
 
 final class ProductInteractor: ProductInteractorProtocol {
-    
-    weak var presenter: ProductInteractorOutputProtocol?
-    let repository: ProductRepositoryProtocol
-    
-    init(repository: ProductRepositoryProtocol) {
-        self.repository = repository
+    weak var output: ProductInteractorOutputProtocol?
+    private let product: Product
+
+    init(product: Product) {
+        self.product = product
     }
-    
+
     func fetchProduct() {
-        Task {
-            do {
-                let product = try await repository.getProductDetails(productId: "207108727")
-                await MainActor.run {
-                    presenter?.didFetchProduct(product)
-                }
-            } catch {
-                print("Error fetching product: \(error)")
-            }
-        }
+        output?.didFetchProduct(product)
     }
 }

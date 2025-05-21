@@ -9,4 +9,7 @@ import Foundation
 
 protocol ProductPresenterProtocol: AnyObject {
     func viewDidLoad()
+    func didSelectRecommendedProduct(_ product: Product)
+    func loadRecommendations(for product: Product)
 }
+

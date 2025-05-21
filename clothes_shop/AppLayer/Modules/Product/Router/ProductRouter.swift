@@ -8,17 +8,27 @@
 import UIKit
 
 final class ProductRouter: ProductRouterProtocol {
-    
-    static func createModule() -> UIViewController {
+    static func createModule(with product: Product) -> UIViewController {
         let view = ProductViewController()
-        let repository = ProductRepository() 
-        let interactor = ProductInteractor(repository: repository)
+        let repository = ProductRepository()
         let router = ProductRouter()
-        let presenter = ProductPresenter(view: view, interactor: interactor, router: router)
+        let presenter = ProductPresenter(
+            view: view,
+            repository: repository,
+            initialProduct: product,
+            router: router
+        )
         
         view.presenter = presenter
-        interactor.presenter = presenter
+        view.product = product
         
         return view
+    }
+    
+    func showProductDetails(for product: Product, from navigationController: UINavigationController?) {
+        let productVC = ProductConfigurator().configure(with: product)
+        productVC.hidesBottomBarWhenPushed = true
+        NotificationCenter.default.post(name: .hideMainTabBar, object: nil)
+        navigationController?.pushViewController(productVC, animated: true)
     }
 }

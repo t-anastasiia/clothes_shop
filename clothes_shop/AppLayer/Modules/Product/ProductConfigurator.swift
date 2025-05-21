@@ -8,10 +8,8 @@
 import UIKit
 
 final class ProductConfigurator {
-
-    func configure() -> UIViewController {
-
-        let viewController = ProductRouter.createModule()
+    func configure(with product: Product) -> UIViewController {
+        let viewController = ProductRouter.createModule(with: product)
         return viewController
     }
 }

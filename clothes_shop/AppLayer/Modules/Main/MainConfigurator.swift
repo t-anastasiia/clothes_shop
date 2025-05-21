@@ -8,14 +8,15 @@
 import UIKit
 
 final class MainConfigurator {
-
+    
     func configure() -> UIViewController {
+        let menuVC = MenuConfigurator.configure()
+        let navMenuVC = UINavigationController(rootViewController: menuVC)
+        navMenuVC.navigationBar.isHidden = true
+//        let cartVC = CartConfigurator.configure()
+//        let profileVC = ProfileConfigurator.configure()
 
-        // TODO: вернуть на MainViewController
-        /// сейчас тут ProductViewController чтобы тестировать его для ДЗ1
-
-//        let viewController = MenuViewController()
-        let viewController = ProductRouter.createModule()
+        let viewController = MainViewController(menuModule: navMenuVC)
         return viewController
     }
 }

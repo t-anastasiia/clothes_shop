@@ -7,121 +7,38 @@
 
 import UIKit
 
-final class MainViewController: UIViewController {
-    private let mainTabBar = MainTabBarView()
-    private var currentChild: UIViewController?
+final class MainViewController: UITabBarController {
+    
+    private let menuVC: UINavigationController
+    private let cartVC = CartViewController()
+    private let profileVC = ProfileViewController()
 
-    fileprivate let menuVC: UINavigationController!
-    fileprivate let cartVC = CartViewController()
-    fileprivate let profileVC = ProfileViewController()
-
-    init(menuModule: UINavigationController
-//         cartModule: UIViewController,
-//         profileModule: UIViewController
-    ) {
+    init(menuModule: UINavigationController) {
         self.menuVC = menuModule
-//        self.cartVC = cartModule
-//        self.profileVC = profileModule
         super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented. Use init(menuModule:cartModule:profileModule:)")
+        fatalError("init(coder:) has not been implemented. Use init(menuModule:)")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
+        setupViewControllers()
         setupTabBar()
-        switchToChild(menuVC)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(hideTabBar),
-                                               name: .hideMainTabBar,
-                                               object: nil)
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(showTabBar),
-                                               name: .showMainTabBar,
-                                               object: nil)
+    }
+    
+    private func setupViewControllers() {
+        menuVC.tabBarItem = UITabBarItem(title: "Меню", image: UIImage(systemName: "list.bullet"), tag: 0)
+        cartVC.tabBarItem = UITabBarItem(title: "Корзина", image: UIImage(systemName: "cart"), tag: 1)
+        profileVC.tabBarItem = UITabBarItem(title: "Профиль", image: UIImage(systemName: "person"), tag: 2)
+        
+        viewControllers = [menuVC, cartVC, profileVC]
     }
     
     private func setupTabBar() {
-        view.addSubview(mainTabBar)
-        mainTabBar.delegate = self
-        
-        mainTabBar.snp.makeConstraints { make in
-            make.left.right.bottom.equalToSuperview()
-        }
-    }
-    
-    private func switchToChild(_ vc: UIViewController) {
-        guard currentChild !== vc else { return }
-
-        if let current = currentChild {
-            current.willMove(toParent: nil)
-            
-            UIView.animate(withDuration: 0.2, animations: {
-                current.view.alpha = 0
-            }, completion: { _ in
-                current.view.removeFromSuperview()
-                current.removeFromParent()
-            })
-        }
-        addChild(vc)
-        vc.view.alpha = 0
-        view.addSubview(vc.view)
-        view.bringSubviewToFront(mainTabBar)
-        
-        vc.view.snp.makeConstraints { make in
-            make.top.left.right.equalToSuperview()
-            make.bottom.equalTo(mainTabBar.snp.top)
-        }
-        
-        UIView.animate(withDuration: 0.2) {
-            vc.view.alpha = 1
-        }
-        
-        vc.didMove(toParent: self)
-        
-        currentChild = vc
-    }
-
-    @objc private func hideTabBar() {
-        setTabBar(hidden: true)
-    }
-    @objc private func showTabBar() {
-        setTabBar(hidden: false)
-    }
-
-    func setTabBar(hidden: Bool, animated: Bool = true) {
-        let height = mainTabBar.frame.height
-        let offset = hidden ? height : 0
-
-        if animated {
-            UIView.animate(withDuration: 0.3) {
-                self.mainTabBar.transform = CGAffineTransform(translationX: 0, y: offset)
-                self.mainTabBar.alpha = hidden ? 0 : 1
-            }
-        } else {
-            self.mainTabBar.transform = CGAffineTransform(translationX: 0, y: offset)
-            self.mainTabBar.alpha = hidden ? 0 : 1
-        }
-    }
-
-}
-
-// MARK: - MainTabBarViewDelegate
-extension MainViewController: MainTabBarViewDelegate {
-    func didTapMenuIcon() {
-        switchToChild(menuVC)
-    }
-    
-    func didTapCartIcon() {
-        switchToChild(cartVC)
-    }
-    
-    func didTapProfileIcon() {
-        switchToChild(profileVC)
+        tabBar.tintColor = UIColor(named: "BrownLight")
+        tabBar.unselectedItemTintColor = UIColor(named: "Text/Second")
+        tabBar.backgroundColor = .white
     }
 }

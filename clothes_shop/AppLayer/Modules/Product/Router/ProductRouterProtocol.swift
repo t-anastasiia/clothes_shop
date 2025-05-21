@@ -9,4 +9,5 @@ import UIKit
 
 protocol ProductRouterProtocol: AnyObject {
     static func createModule(with product: Product) -> UIViewController
+    func showProductDetails(for product: Product, from navigationController: UINavigationController?)
 }

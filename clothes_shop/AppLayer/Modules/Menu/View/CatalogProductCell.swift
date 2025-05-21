@@ -5,22 +5,20 @@
 //  Created by anastasiia talmazan on 2025-05-06.
 //
 
-import Foundation
-
 import UIKit
 import SnapKit
 
-class ProductCell: UITableViewCell {
+class CatalogProductCell: UITableViewCell {
 
     private let imageLoader = UIImageLoader()
 
-    static let identifier = "ProductCell"
+    static let identifier = "CatalogProductCell"
 
-    private let productImageView = UIImageView()
-    private let titleLabel = UILabel()
-    private let descriptionLabel = UILabel()
-    private let priceLabel = UILabel()
-    private let priceContainer = UIView()
+    internal let productImageView = UIImageView()
+    internal let titleLabel = UILabel()
+    internal let descriptionLabel = UILabel()
+    internal let priceLabel = UILabel()
+    internal let priceContainer = UIView()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -31,7 +29,7 @@ class ProductCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setupUI() {
+    internal func setupUI() {
         selectionStyle = .none
 
         titleLabel.font = .boldSystemFont(ofSize: 18)
@@ -45,9 +43,9 @@ class ProductCell: UITableViewCell {
         descriptionLabel.lineBreakMode = .byTruncatingTail
 
         priceLabel.font = .boldSystemFont(ofSize: 18)
-        priceLabel.textColor = UIColor(red: 0.36, green: 0.24, blue: 0.19, alpha: 1)
+        priceLabel.textColor = UIColor(named: "BrownDark")
 
-        priceContainer.backgroundColor = UIColor(red: 0.97, green: 0.94, blue: 0.91, alpha: 1)
+        priceContainer.backgroundColor = UIColor(named: "Beige")
         priceContainer.layer.cornerRadius = 8
         priceContainer.addSubview(priceLabel)
 
@@ -95,3 +93,4 @@ class ProductCell: UITableViewCell {
         }
     }
 }
+

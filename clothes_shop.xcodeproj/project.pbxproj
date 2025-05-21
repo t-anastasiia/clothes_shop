@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		316F8D0B2D789290007EA588 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 316F8D0A2D789290007EA588 /* SnapKit */; };
+		31F4DB952DDD849E002236D1 /* SkeletonView in Frameworks */ = {isa = PBXBuildFile; productRef = 31F4DB942DDD849E002236D1 /* SkeletonView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				31F4DB952DDD849E002236D1 /* SkeletonView in Frameworks */,
 				316F8D0B2D789290007EA588 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -132,6 +134,7 @@
 			name = clothes_shop;
 			packageProductDependencies = (
 				316F8D0A2D789290007EA588 /* SnapKit */,
+				31F4DB942DDD849E002236D1 /* SkeletonView */,
 			);
 			productName = clothes_shop;
 			productReference = 3130197A2D7836FD007AB73D /* clothes_shop.app */;
@@ -217,6 +220,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				316F8D092D789290007EA588 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				31F4DB932DDD849E002236D1 /* XCRemoteSwiftPackageReference "SkeletonView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3130197B2D7836FD007AB73D /* Products */;
@@ -611,6 +615,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		31F4DB932DDD849E002236D1 /* XCRemoteSwiftPackageReference "SkeletonView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Juanpe/SkeletonView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.31.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -618,6 +630,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 316F8D092D789290007EA588 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		31F4DB942DDD849E002236D1 /* SkeletonView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 31F4DB932DDD849E002236D1 /* XCRemoteSwiftPackageReference "SkeletonView" */;
+			productName = SkeletonView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

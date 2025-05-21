@@ -1,3 +1,10 @@
+//
+//  Product.swift
+//  clothes_shop
+//
+//  Created by anastasiia talmazan on 2025-03-18.
+//
+
 import Foundation
 
 struct Product {
@@ -6,7 +13,7 @@ struct Product {
     let price: Double
     let description: String
     let category: String
-    let image: URL
+    let image: URL?
 }
 
 struct SizeDetailed {

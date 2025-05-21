@@ -14,6 +14,7 @@ protocol MenuRouterProtocol {
 class MenuRouter: MenuRouterProtocol {
     func openProductDetails(navigationController: UINavigationController, with product: Product) {
         let productVC = ProductConfigurator().configure(with: product)
+        productVC.hidesBottomBarWhenPushed = true
         NotificationCenter.default.post(name: .hideMainTabBar, object: nil)
         navigationController.pushViewController(productVC, animated: true)
     }

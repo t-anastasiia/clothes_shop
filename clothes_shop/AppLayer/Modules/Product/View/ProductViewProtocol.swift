@@ -9,4 +9,5 @@ import Foundation
 
 protocol ProductViewProtocol: AnyObject {
     func displayProduct(_ product: Product)
-}
+    func displayRecommendedProducts(_ products: [Product])
+} 
